@@ -1,0 +1,142 @@
+:root {
+  --color-white: #FAFAFA;
+  --color-brand: #1677FF;
+
+  --box-shadow: 0 1px 2px 0 rgba(12, 10, 9, .06), 0 1px 3px 0 rgba(12, 10, 9, .10);
+}
+/* Указываем box sizing и отступы */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Убираем внутренние отступы */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+/* Убираем внешние отступы */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+  font-synthesis: none;
+}
+
+/* Выставляем основные настройки по-умолчанию для body */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Удаляем стандартную стилизацию для всех ul и il, у которых есть атрибут class*/
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+/* Элементы a, у которых нет класса, сбрасываем до дефолтных стилей */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Упрощаем работу с изображениями */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Указываем понятную периодичность в потоке данных у article*/
+article > * + * {
+  margin-top: 1em;
+}
+
+/* Наследуем шрифты для инпутов и кнопок */
+input,
+label,
+button,
+textarea,
+select {
+  font: inherit;
+  font-synthesis: none;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+select::-ms-expand {
+  display: none;
+}
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+@font-face {
+  font-family: 'ProximaNova-Regular';
+  src: url('./fonts/ProximaNova-Regular.otf');
+  src: local('ProximaNova-Regular'),
+  url('./fonts/ProximaNova-Regular.eot') format('embedded-opentype'),
+  url('./fonts/ProximaNova-Regular.woff') format('woff'),
+  url('./fonts/ProximaNova-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'ProximaNova-Semibold';
+  src: url('./fonts/ProximaNova-Semibold.otf');
+  src: local('ProximaNova-Semibold'),
+  url('./fonts/ProximaNova-Semibold.eot') format('embedded-opentype'),
+  url('./fonts/ProximaNova-Semibold.woff') format('woff'),
+  url('./fonts/ProximaNova-Semibold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'ProximaNova-Bold';
+  src: url('./fonts/ProximaNova-Bold.otf');
+  src: local('ProximaNova-Bold'),
+  url('./fonts/ProximaNova-Bold.eot') format('embedded-opentype'),
+  url('./fonts/ProximaNova-Bold.woff') format('woff'),
+  url('./fonts/ProximaNova-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'ProximaNova-Thin';
+  src: url('./fonts/ProximaNova-Thin.otf');
+  src: local('ProximaNova-Thin'),
+  url('./fonts/ProximaNova-Thin.eot') format('embedded-opentype'),
+  url('./fonts/ProximaNova-Thin.woff') format('woff'),
+  url('./fonts/ProximaNova-Thin.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

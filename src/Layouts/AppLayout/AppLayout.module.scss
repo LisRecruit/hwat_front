@@ -1,0 +1,27 @@
+.container {
+  height: 100vh;
+}
+.header {
+  display: flex;
+  align-items: center;
+
+  .row {
+    width: 100%;
+  }
+}
+.logo {
+  font-family: 'ProximaNova-Bold', sans-serif;
+  font-size: 32px !important;
+  color: var(--color-white) !important;
+  margin: 0 !important;
+}
+.breadcrumbs {
+  margin: 16px 0;
+}
+.content {
+  min-height: 280px;
+  background: var(--color-white);
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}

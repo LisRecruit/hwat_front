@@ -6,6 +6,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "baseUrl": "./src",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -20,7 +21,26 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@/hooks": ["hooks/index.ts"]
+    }
   },
-  "include": ["src"]
+    "include": [
+      "types.d.ts",
+      "components",
+      "pages",
+      "lib",
+      "hooks",
+      "types",
+    ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      ".turbo",
+      "coverage",
+      "**/*.test.ts",
+      "**/*.spec.ts"
+    ]
 }

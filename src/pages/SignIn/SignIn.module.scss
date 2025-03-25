@@ -1,0 +1,22 @@
+.form {
+  min-width: 400px;
+  border-radius: 8px;
+}
+.title {
+  font-family: 'ProximaNova-Semibold', sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  font-style: normal;
+  text-align: center;
+}
+.paragraph {
+  margin: 0 !important;
+
+  &.error {
+    min-height: 22px;
+  }
+}
+.message {
+  text-align: center;
+  margin: 0;
+}
