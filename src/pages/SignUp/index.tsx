@@ -1,7 +1,7 @@
 import styles from './SignUp.module.scss';
 import { FC, useState } from 'react';
 import { Button, Flex, Input, notification, Typography } from 'antd';
-import { capitalize, compact, map, mapValues } from 'lodash';
+import { lowerCase, compact, map, mapValues } from 'lodash';
 import Validator from 'validatorjs';
 import { ReactChangeEventType } from '../../types/ReactEventTypes';
 import classNames from 'classnames';
@@ -60,7 +60,7 @@ const SignUp: FC = () => {
         setIsLoadingRegisterButton(true);
 
         const registrationUserResult = await ApiManager.registration({
-            username: capitalize(userData.username),
+            username: lowerCase(userData.username),
             password: userData.password
         });
 
