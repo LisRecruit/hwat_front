@@ -1,13 +1,14 @@
 import styles from './SignIn.module.scss';
-import { FC, useState } from 'react';
-import { Button, Flex, Input, Typography } from 'antd';
-import { map } from 'lodash';
-//import Validator from 'validatorjs';
-import { ReactChangeEventType } from '../../types/ReactEventTypes';
+import React, { useState } from 'react';
+import { Button, Flex, Input, notification, Typography } from 'antd';
+import { compact, map, mapValues, toPairs } from 'lodash';
+import Validator from 'validatorjs';
+import { ReactChangeEventType } from '@/types/ReactEventTypes.ts';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
-import { ApiManager } from '../../lib';
+import { ApiManager, iUserLoginRequest } from '@/lib';
 import { iLoginFormDataInitialState, LoginFormDataKeyTypes } from './types';
+import { useMutation } from '@tanstack/react-query';
 
 const cx = classNames.bind(styles);
 
@@ -15,21 +16,59 @@ const loginFormDataInitialState: iLoginFormDataInitialState = {
     email: { value: '', label: 'Email', placeholder: 'example@example.com', type: 'email', error: '' },
     password: { value: '', label: 'Password', placeholder: '', type: 'password', error: '' },
 };
-// const loginFormDataValidationRules = {
-//     email: 'required|email',
-//     password: 'required|min:8|max:24',
-// };
-const SignIn: FC = () => {
+
+const loginFormDataValidationRules = {
+    email: 'required|email',
+    password: 'required|min:8|max:24',
+};
+
+export const SignIn: React.FC = () => {
     const [loginFormData, setLoginFormData] = useState<iLoginFormDataInitialState>(loginFormDataInitialState);
-    //const [notifications, notificationsContext] = notification.useNotification();
-    const [isLoadingLoginButton] = useState(false);
+    const [notifications, notificationsContext] = notification.useNotification();
+
+    const { mutate: dispatchLogin, isPending } = useMutation({
+        mutationFn: (body: iUserLoginRequest) => ApiManager.login(body),
+        onSuccess: (response) => {
+            console.log('onSuccess', response)
+        },
+        onError: (error: Error) => {
+            notifications.error({
+                message: 'Authorization error',
+                description: <Typography.Text>
+                    {error.message}
+                </Typography.Text>,
+                showProgress: true,
+                pauseOnHover: true,
+            });
+        },
+    });
 
     const onClickSignInButton = () => {
         // const fakeToken = 'jwt-fake-token'
         // localStorage.setItem('token', fakeToken) // Или sessionStorage.setItem()
         // window.location.reload() // Перезагрузка страницы для обновления стейта
 
-        ApiManager.login({ username: 'user123', password: 'password123' })
+        const userData = mapValues(loginFormData, input => input.value);
+
+        const validation = new Validator(userData, loginFormDataValidationRules);
+
+        if (validation.fails()) {
+            return setLoginFormData(prev => mapValues(prev, (values, key) => ({
+                ...values,
+                error: validation.errors.first(key) || ''
+            })))
+        }
+
+        const isInputsHasErrors: boolean = !!compact(map(loginFormData, input => input.error)).length;
+
+        if (isInputsHasErrors) {
+            setLoginFormData(prev => mapValues(prev, input => ({
+                ...input,
+                error: ''
+            })));
+        }
+
+        dispatchLogin({ username: 'user123', password: 'password123' });
     };
 
     const onChangeInput = (event: ReactChangeEventType): void => setLoginFormData(prev => ({
@@ -40,41 +79,13 @@ const SignIn: FC = () => {
         }
     }));
 
-    // const onClickLoginButton = async (): Promise<void> => {
-    //     setIsLoadingLoginButton(true);
-    //
-    //     const userData = mapValues(loginFormData, input => input.value);
-    //
-    //     const validation = new Validator(userData, loginFormDataValidationRules);
-    //     console.log('validation', validation)
-    //     if (validation.fails()) {
-    //         return setLoginFormData(prev => mapValues(prev, (values, key) => ({
-    //             ...values,
-    //             error: validation.errors.first(key) || ''
-    //         })))
-    //     }
-    //
-    //     const isInputsHasErrors: boolean = !!compact(map(loginFormData, input => input.error)).length;
-    //
-    //     if (isInputsHasErrors) {
-    //         setLoginFormData(prev => mapValues(prev, input => ({
-    //             ...input,
-    //             error: ''
-    //         })));
-    //     }
-    //
-    //     const loginUserResult = setTimeout(() => {}, 1500);
-    //
-    //     setIsLoadingLoginButton(false);
-    // };
-
     return (
         <Flex gap='small' vertical className={styles.form}>
             <Typography.Title level={4} className={styles.title}>
                 Sign in
             </Typography.Title>
 
-            {map(loginFormData, (input, key: LoginFormDataKeyTypes) =>
+            {map(toPairs(loginFormData), ([key, input]) =>
                 <Flex gap='small' vertical key={key}>
                     <Typography.Paragraph className={styles.paragraph}>
                         {input.label}
@@ -107,7 +118,7 @@ const SignIn: FC = () => {
                     type='primary'
                     size='large'
                     onClick={onClickSignInButton}
-                    loading={isLoadingLoginButton}
+                    loading={isPending}
                 >
                     Sign in
                 </Button>
@@ -125,8 +136,8 @@ const SignIn: FC = () => {
                     </NavLink>
                 </Typography.Paragraph>
             </Flex>
+
+            {notificationsContext}
         </Flex>
     )
 }
-
-export default SignIn;

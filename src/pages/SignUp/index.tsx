@@ -1,13 +1,14 @@
 import styles from './SignUp.module.scss';
-import { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Flex, Input, notification, Typography } from 'antd';
-import { lowerCase, compact, map, mapValues } from 'lodash';
+import { lowerCase, compact, map, mapValues, toPairs } from 'lodash';
 import Validator from 'validatorjs';
-import { ReactChangeEventType } from '../../types/ReactEventTypes';
+import { ReactChangeEventType } from '@/types/ReactEventTypes';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
-import { ApiManager } from '../../lib';
+import { ApiManager, iUserLoginRequest } from '@/lib';
 import { iRegistrationFormDataInitialState, RegistrationFormDataKeyTypes } from './types';
+import { useMutation } from '@tanstack/react-query';
 
 const cx = classNames.bind(styles);
 
@@ -17,16 +18,44 @@ const registrationFormDataInitialState: iRegistrationFormDataInitialState = {
     password: { value: '', label: 'Password', placeholder: '', type: 'password', error: '' },
     confirmPassword: { value: '', label: 'Confirm password', placeholder: '', type: 'password', error: '' },
 };
+
 const registrationFormDataValidationRules = {
     username: 'required|min:3|max:18',
     //email: 'required|email',
     password: 'required|min:8|max:24',
     confirmPassword: 'required|min:8|max:24|same:password'
 };
-const SignUp: FC = () => {
+
+export const SignUp: React.FC = () => {
     const [registrationFormData, setRegistrationFormData] = useState<iRegistrationFormDataInitialState>(registrationFormDataInitialState);
     const [notifications, notificationsContext] = notification.useNotification();
-    const [isLoadingRegisterButton, setIsLoadingRegisterButton] = useState(false);
+
+    const { mutate: dispatchRegistration, isPending } = useMutation({
+        mutationFn: (body: iUserLoginRequest) => ApiManager.registration(body),
+        onSuccess: (response) => {
+            console.log('onSuccess', response)
+
+            notifications.success({
+                message: <Typography.Text>
+                    Registration was successful
+                </Typography.Text>,
+                description: 'Created new user!',
+                showProgress: true,
+                pauseOnHover: true,
+                duration: null
+            });
+        },
+        onError: (error: Error) => {
+            notifications.error({
+                message: 'Registration error',
+                description: <Typography.Text>
+                    {error.message}
+                </Typography.Text>,
+                showProgress: true,
+                pauseOnHover: true,
+            });
+        },
+    });
 
     const onChangeInput = (event: ReactChangeEventType): void => setRegistrationFormData(prev => ({
         ...prev,
@@ -36,7 +65,7 @@ const SignUp: FC = () => {
         }
     }));
 
-    const onClickSignUpButton = async (): Promise<void> => {
+    const onClickSignUpButton = () => {
         const userData = mapValues(registrationFormData, input => input.value);
 
         const validation = new Validator(userData, registrationFormDataValidationRules);
@@ -57,26 +86,10 @@ const SignUp: FC = () => {
             })));
         }
 
-        setIsLoadingRegisterButton(true);
-
-        const registrationUserResult = await ApiManager.registration({
+        dispatchRegistration({
             username: lowerCase(userData.username),
             password: userData.password
         });
-
-        console.log('registrationUserResult', registrationUserResult)
-        setIsLoadingRegisterButton(false);
-
-        if (registrationUserResult.userResponse) {
-            notifications.success({
-                key: 'successUserRegistration',
-                message: 'Success',
-                description: 'Created new user!',
-                showProgress: true,
-                pauseOnHover: true,
-                duration: null
-            });
-        }
     };
 
     return (
@@ -85,7 +98,7 @@ const SignUp: FC = () => {
                 Sign up
             </Typography.Title>
 
-            {map(registrationFormData, (input, key: RegistrationFormDataKeyTypes) =>
+            {map(toPairs(registrationFormData), ([key, input]) =>
                 <Flex gap='small' vertical key={key}>
                     <Typography.Paragraph className={styles.paragraph}>
                         {input.label}
@@ -118,7 +131,7 @@ const SignUp: FC = () => {
                     type='primary'
                     size='large'
                     onClick={onClickSignUpButton}
-                    loading={isLoadingRegisterButton}
+                    loading={isPending}
                 >
                     Sign up
                 </Button>
@@ -141,5 +154,3 @@ const SignUp: FC = () => {
         </Flex>
     )
 }
-
-export default SignUp;

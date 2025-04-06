@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { Suspense } from 'react';
 import { Spin } from 'antd';
-import SignIn from '../pages/SignIn';
-import SignUp from '../pages/SignUp';
+import { SignIn } from '@/pages/SignIn';
+import { SignUp } from '@/pages/SignUp';
 
 const DefaultRoutes = () => {
     return (

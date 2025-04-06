@@ -2,7 +2,7 @@ export interface iUserLoginRequest {
     username: string,
     password: string,
 }
-export interface iLoginResponse {
+export interface iUserLoginResponse {
     success: boolean;
     token?: string;
     error?: string;

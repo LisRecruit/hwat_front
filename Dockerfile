@@ -1,13 +1,20 @@
 # Используем Node.js
-FROM node:18
+FROM node:20-slim
+
+# Указываем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы проекта
-COPY package.json package-lock.json ./
-RUN npm install
+# Копируем файлы зависимостей
+COPY package.json yarn.lock ./
 
-# Копируем весь код проекта
+# Устанавливаем зависимости через yarn
+RUN yarn install
+
+# Копируем остальной код
 COPY . .
 
+# Открываем порт (если нужно для dev-сервера)
+EXPOSE 5173
+
 # Запускаем Vite в режиме разработки
-CMD ["npm", "run", "dev"]
+CMD ["yarn", "dev", "--host"]

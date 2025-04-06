@@ -9,7 +9,7 @@ services:
       - .:/app  # Монтируем локальные файлы
       - /app/node_modules  # Исключаем node_modules
     working_dir: /app
-    command: npm run dev -- --host 0.0.0.0  # Открываем сервер на всех интерфейсах
+    command: sh -c "yarn dev --host 0.0.0.0"  # Открываем сервер на всех интерфейсах
     environment:
       - VITE_API_URL=http://backend:9999  # API бекенда
     depends_on:
