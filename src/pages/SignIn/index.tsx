@@ -1,7 +1,7 @@
 import styles from './SignIn.module.scss';
 import React, { useState } from 'react';
 import { Button, Flex, Input, notification, Typography } from 'antd';
-import { compact, map, mapValues, toPairs } from 'lodash';
+import { compact, lowerCase, map, mapValues, toPairs } from 'lodash';
 import Validator from 'validatorjs';
 import { ReactChangeEventType } from '@/types/ReactEventTypes.ts';
 import classNames from 'classnames';
@@ -9,27 +9,37 @@ import { NavLink } from 'react-router-dom';
 import { ApiManager, iUserLoginRequest } from '@/lib';
 import { iLoginFormDataInitialState, LoginFormDataKeyTypes } from './types';
 import { useMutation } from '@tanstack/react-query';
+import { useAuthCookies } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '@/stores/useUserStore.ts';
 
 const cx = classNames.bind(styles);
 
 const loginFormDataInitialState: iLoginFormDataInitialState = {
-    email: { value: '', label: 'Email', placeholder: 'example@example.com', type: 'email', error: '' },
+    username: { value: '', label: 'Username', placeholder: '', type: 'text', error: '' },
     password: { value: '', label: 'Password', placeholder: '', type: 'password', error: '' },
 };
 
 const loginFormDataValidationRules = {
-    email: 'required|email',
+    username: 'required|min:3|max:18',
     password: 'required|min:8|max:24',
 };
 
 export const SignIn: React.FC = () => {
+    const navigate = useNavigate();
+    const { setAuthCookies } = useAuthCookies();
+
     const [loginFormData, setLoginFormData] = useState<iLoginFormDataInitialState>(loginFormDataInitialState);
     const [notifications, notificationsContext] = notification.useNotification();
 
     const { mutate: dispatchLogin, isPending } = useMutation({
         mutationFn: (body: iUserLoginRequest) => ApiManager.login(body),
         onSuccess: (response) => {
-            console.log('onSuccess', response)
+            if (response.token) {
+                setAuthCookies(response.token);
+                useUserStore.getState().setToken(response.token);
+                navigate('/');
+            }
         },
         onError: (error: Error) => {
             notifications.error({
@@ -44,9 +54,6 @@ export const SignIn: React.FC = () => {
     });
 
     const onClickSignInButton = () => {
-        // const fakeToken = 'jwt-fake-token'
-        // localStorage.setItem('token', fakeToken) // Или sessionStorage.setItem()
-        // window.location.reload() // Перезагрузка страницы для обновления стейта
 
         const userData = mapValues(loginFormData, input => input.value);
 
@@ -68,7 +75,10 @@ export const SignIn: React.FC = () => {
             })));
         }
 
-        dispatchLogin({ username: 'user123', password: 'password123' });
+        dispatchLogin({
+            username: lowerCase(userData.username),
+            password: userData.password
+        });
     };
 
     const onChangeInput = (event: ReactChangeEventType): void => setLoginFormData(prev => ({
@@ -136,7 +146,6 @@ export const SignIn: React.FC = () => {
                     </NavLink>
                 </Typography.Paragraph>
             </Flex>
-
             {notificationsContext}
         </Flex>
     )

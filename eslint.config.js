@@ -28,7 +28,6 @@ export default tseslint.config(
 
             // 🔍 Добавим проверки для React Query
             '@tanstack/query/exhaustive-deps': 'warn',
-            '@tanstack/query/prefer-query-object-syntax': 'warn',
         },
     }
 );

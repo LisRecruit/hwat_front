@@ -33,11 +33,9 @@ export const SignUp: React.FC = () => {
     const { mutate: dispatchRegistration, isPending } = useMutation({
         mutationFn: (body: iUserLoginRequest) => ApiManager.registration(body),
         onSuccess: (response) => {
-            console.log('onSuccess', response)
-
             notifications.success({
                 message: <Typography.Text>
-                    Registration was successful
+                    {response.message}
                 </Typography.Text>,
                 description: 'Created new user!',
                 showProgress: true,

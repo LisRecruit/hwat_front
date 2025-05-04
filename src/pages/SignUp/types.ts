@@ -5,7 +5,7 @@ export type iRegistrationFormDataInitialState = {
         value: string;
         label: string;
         placeholder: string;
-        type: string,
+        type: 'text' | 'password',
         error: string
     };
 };

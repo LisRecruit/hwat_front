@@ -3,7 +3,7 @@ export interface iUserLoginRequest {
     password: string,
 }
 export interface iUserLoginResponse {
-    success: boolean;
+    message: string;
     token?: string;
     error?: string;
 }
@@ -20,4 +20,19 @@ export interface iUserRegistrationResponse {
         roleIds: number[]
     },
     message: string
+}
+export interface iUnApprovedUser {
+    id: number,
+    username: string,
+    enabled: boolean,
+    roleNames: string[]
+}
+export interface iGetUnApprovedUsersResponse {
+    users: iUnApprovedUser[]
+}
+export interface iDeleteUserResponse {
+    message: string,
+}
+export interface iSwitchAccessUserResponse {
+    message: string,
 }

@@ -8,10 +8,20 @@ import { NavLink } from 'react-router-dom';
 import { IoMdSettings } from 'react-icons/io';
 import { iUserAvatarProps } from './types';
 import { IconWrapper } from '../IconWrapper';
+import { useAuth, useAuthCookies } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '@/stores/useUserStore.ts';
 
-export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email, isAdmin }) => {
+export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email }) => {
+    const navigate = useNavigate();
+    const { isAdmin } = useAuth();
+    const { removeAuthCookies } = useAuthCookies();
 
-    const onClickLogoutButton = (): void => {};
+    const onClickSignOutButton = () => {
+        removeAuthCookies();
+        useUserStore.getState().clear();
+        navigate('/');
+    };
 
     const dropdownMenu: MenuProps['items'] = compact([
         {
@@ -23,12 +33,12 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email, isA
             disabled: true,
         },
         {
-            key: 'divider',
+            key: 'divider-top',
             type: 'divider',
         },
         isAdmin && {
             key: 'admin',
-            label: <NavLink to='/admin' className={styles.link}>
+            label: <NavLink to='/admin-dashboard' className={styles.link}>
                 Admin
             </NavLink>,
             icon: <IconWrapper width={20} height={20} className={styles.icon}>
@@ -38,7 +48,7 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email, isA
         },
         {
             key: 'settings',
-            label:  <NavLink to='/resources-setup' className={styles.link}>
+            label:  <NavLink to='/settings' className={styles.link}>
                 Settings
             </NavLink>,
             icon: <IconWrapper width={20} height={20} className={styles.icon}>
@@ -47,7 +57,7 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email, isA
             className: styles.row
         },
         {
-            key: 'divider',
+            key: 'divider-bottom',
             type: 'divider',
         },
         {
@@ -55,7 +65,7 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email, isA
             label: <Button
                 type='primary'
                 className={styles.button}
-                onClick={onClickLogoutButton}
+                onClick={onClickSignOutButton}
             >
                 Sign out
             </Button>,
@@ -64,7 +74,12 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email, isA
     ]);
 
     return (
-        <Dropdown menu={{ items: dropdownMenu }} placement='bottomRight' arrow>
+        <Dropdown
+            menu={{ items: dropdownMenu }}
+            placement='bottomRight'
+            arrow
+            trigger={['click']}
+        >
             <Badge dot>
                 <Avatar shape='square' size={40} className={styles.avatar} icon={<PiUserCircleGearDuotone/>}/>
             </Badge>

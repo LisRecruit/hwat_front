@@ -1,2 +1,6 @@
 export { ApiManager } from './ApiManager';
-export type { iUserLoginRequest } from './ApiManager/types.ts';
+export type {
+    iUserLoginRequest,
+    iGetUnApprovedUsersResponse,
+    iUnApprovedUser
+} from './ApiManager/types.ts';

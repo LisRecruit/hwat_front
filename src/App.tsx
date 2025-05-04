@@ -1,11 +1,12 @@
 import { ReactNode } from 'react';
-import AppLayout from './Layouts/AppLayout/AppLayout';
+import AppLayout from './layouts/AppLayout/AppLayout';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
-import DefaultLayout from './Layouts/DefaultLayout/DefaultLayout';
-import { useAuth } from './hooks';
+import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
+import { useAuth, useInitAuthState } from './hooks';
 
 const App = (): ReactNode => {
+    useInitAuthState();
     const { isAuthenticated } = useAuth();
     //const locale = new Intl.Locale('en-US');
 
@@ -19,12 +20,10 @@ const App = (): ReactNode => {
                     }
                 }}
             >
-                <div>
-                    {isAuthenticated
-                        ? <AppLayout/>
-                        : <DefaultLayout/>
-                    }
-                </div>
+                {isAuthenticated
+                    ? <AppLayout/>
+                    : <DefaultLayout/>
+                }
             </ConfigProvider>
         </BrowserRouter>
     )

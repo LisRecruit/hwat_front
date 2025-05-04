@@ -1,7 +1,8 @@
 :root {
-  --color-white: #FAFAFA;
+  --color-white: #FFFFFF;
   --color-brand: #1677FF;
-
+  --color-red: #FF4B4B;
+  --color-green: #75CC5F;
   --box-shadow: 0 1px 2px 0 rgba(12, 10, 9, .06), 0 1px 3px 0 rgba(12, 10, 9, .10);
 }
 /* Указываем box sizing и отступы */

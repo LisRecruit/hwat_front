@@ -2,11 +2,14 @@ import {
     iUserLoginResponse,
     iUserLoginRequest,
     iUserRegistrationRequest,
-    iUserRegistrationResponse
+    iUserRegistrationResponse,
+    iGetUnApprovedUsersResponse,
+    iDeleteUserResponse, iSwitchAccessUserResponse
 } from './types';
 
 export class ApiManager {
-    static API_URL = 'http://localhost:9999/api/v1';
+    static API_URL = import.meta.env.VITE_API_URL;
+    static API_URL_ADMIN = `${this.API_URL}/admin`;
 
     private static async post<T>(url: string, body?: object): Promise<T> {
         const response = await fetch(url, {
@@ -25,27 +28,87 @@ export class ApiManager {
 
         return responseJson;
     }
-    // private static async get<T>(url: string): Promise<T> {
-    //     const response = await fetch(url, {
-    //         method: 'GET',
-    //         headers: { 'Content-Type': 'application/json' }
-    //     });
-    //
-    //     const responseJson = await response.json();
-    //
-    //     if (response.ok) {
-    //         console.log('%cResponse json:', 'color:lightgreen', responseJson);
-    //     } else {
-    //         console.log('%cResponse failed:', 'color:indianred', responseJson);
-    //     }
-    //
-    //     return responseJson;
-    // }
+    private static async get<T>(url: string, token?: string): Promise<T> {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers
+        });
+
+        const responseJson = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseJson.message || 'Request failed');
+        }
+
+        return responseJson;
+    }
+
+    private static async delete<T>(url: string, token?: string): Promise<T> {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers
+        });
+
+        const responseJson = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseJson.message || 'Request failed');
+        }
+
+        return responseJson;
+    }
+    private static async patch<T>(url: string, token?: string): Promise<T> {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers
+        });
+
+        const responseJson = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseJson.message || 'Request failed');
+        }
+
+        return responseJson;
+    }
 
     static login(body: iUserLoginRequest): Promise<iUserLoginResponse> {
         return this.post<iUserLoginResponse>(this.API_URL + '/auth/login', body);
     }
     static registration(body: iUserRegistrationRequest): Promise<iUserRegistrationResponse> {
         return this.post<iUserRegistrationResponse>(this.API_URL + '/auth/registration', body);
+    }
+    static getUnapprovedUsers(authToken: string): Promise<iGetUnApprovedUsersResponse> {
+        return this.get<iGetUnApprovedUsersResponse>(this.API_URL_ADMIN + '/users/getUnapproved', authToken);
+    }
+    static deleteUser(authToken: string, id: number): Promise<iDeleteUserResponse> {
+        return this.delete<iDeleteUserResponse>(this.API_URL_ADMIN + `/users/${id}`, authToken)
+    }
+    static switchAccessUser(authToken: string, id: number): Promise<iSwitchAccessUserResponse> {
+        return this.patch<iSwitchAccessUserResponse>(this.API_URL_ADMIN + `/users/switchAccess/${id}`, authToken)
     }
 }

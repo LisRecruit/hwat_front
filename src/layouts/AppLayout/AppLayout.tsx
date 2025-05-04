@@ -4,15 +4,15 @@ import { Breadcrumb, Layout, Menu, Flex, Typography } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import AppRoutes from '../../routes/AppRoutes';
 import { LoginedUserDropdown } from '../../components';
+import { AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer } = Layout
 
 //const Dashboard = lazy(() => import('../../pages/Dashboard/Dashboard'))
 
 const menu = [
-    { key: 1, label: 'Upload file' },
-    { key: 2, label: 'Something' },
-    { key: 3, label: 'Something 2' },
+    { key: 1, label: 'Interlude', icon: <AppstoreOutlined/> },
+    { key: 2, label: 'High Five', icon: <SettingOutlined/> },
 ];
 
 const breadcrumbs = [
@@ -31,22 +31,19 @@ const AppLayout = () => {
         <Layout className={styles.container}>
             <Header className={styles.header}>
                 <Flex justify='space-between' align='center' gap='large' className={styles.row}>
-                    <Flex justify='flex-start' align='center' gap='large'>
-                        <Typography.Title level={1} className={styles.logo}>
-                            Company name
-                        </Typography.Title>
-                        <Menu
-                            theme='dark'
-                            mode='horizontal'
-                            defaultSelectedKeys={['1']}
-                            items={menu}
-                            style={{ flex: 1, minWidth: 0 }}
-                        />
-                    </Flex>
+                    <Typography.Title level={1} className={styles.logo}>
+                        Company name
+                    </Typography.Title>
+                    <Menu
+                        theme='dark'
+                        mode='horizontal'
+                        //defaultSelectedKeys={['1']}
+                        items={menu}
+                        style={{ flex: 1, minWidth: 0 }}
+                    />
                     <LoginedUserDropdown
                         username='Sheppard'
                         email='sheppard@gmail.com'
-                        isAdmin={true}
                     />
                 </Flex>
             </Header>

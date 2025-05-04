@@ -1,11 +1,11 @@
-export type LoginFormDataKeyTypes = 'email' | 'password';
+export type LoginFormDataKeyTypes = 'username' | 'password';
 
 export type iLoginFormDataInitialState = {
     [Key in LoginFormDataKeyTypes]: {
         value: string;
         label: string;
         placeholder: string;
-        type: 'email' | 'password';
+        type: 'text' | 'password';
         error: string
     };
 };

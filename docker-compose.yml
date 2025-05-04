@@ -1,20 +1,4 @@
-version: "3.8"
-
 services:
-  frontend:
-    build: .
-    ports:
-      - "5173:5173"  # Открываем стандартный порт Vite
-    volumes:
-      - .:/app  # Монтируем локальные файлы
-      - /app/node_modules  # Исключаем node_modules
-    working_dir: /app
-    command: sh -c "yarn dev --host 0.0.0.0"  # Открываем сервер на всех интерфейсах
-    environment:
-      - VITE_API_URL=http://backend:9999  # API бекенда
-    depends_on:
-      - backend
-
   backend:
     image: ihorlis/hwat-app  # Бэкенд из Docker Hub
     container_name: hwat-backend

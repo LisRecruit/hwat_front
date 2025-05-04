@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import { Suspense } from 'react';
 import { Spin } from 'antd';
 import { SignIn } from '@/pages/SignIn';

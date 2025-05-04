@@ -24,10 +24,11 @@
     "noUncheckedSideEffectImports": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@/pages/*": ["pages/*"],
       "@/hooks": ["hooks/index.ts"],
       "@/lib": ["lib/index.ts"],
+      "@/pages/*": ["pages/*"],
       "@/types/*": ["types/*"],
+      "@/stores/*": ["stores/*"]
     }
   },
     "include": [
