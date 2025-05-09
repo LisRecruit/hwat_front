@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import styles from './AdminDashboard.module.scss';
 import { iUnApprovedUser } from '@/lib';
-import { useDeleteUser, useGetUnApprovedUsers, useSwitchAccessUser } from '@/hooks';
+import { useDeleteUser, useSwitchAccessUser, useGetUsers, usePagination } from '@/hooks';
 import { Avatar, Button, Dropdown, Flex, Table, TableColumnsType, Typography, Tag } from 'antd';
 import Icon from '@ant-design/icons';
 import { head, split, upperCase, capitalize, map } from 'lodash';
@@ -30,7 +30,9 @@ const getRandomColor = (index: number, colorsSchema: string[]): string => {
 };
 
 const AdminDashboard: FC = () => {
-    const { data: fetchedUnapprovedUsersResponse, isLoading, error } = useGetUnApprovedUsers();
+    const { pagination, onChangePagination } = usePagination();
+
+    const { data: fetchedUsersResponse, isLoading, error } = useGetUsers(pagination.page, pagination.pageSize);
     const { mutate: dispatchDeleteUser } = useDeleteUser();
     const { mutate: dispatchSwitchAccessUser } = useSwitchAccessUser();
 
@@ -113,14 +115,20 @@ const AdminDashboard: FC = () => {
 
     return (
         <div>
-            <Table
-                columns={columns}
-                dataSource={fetchedUnapprovedUsersResponse?.users ?? []}
-                scroll={{ x: 600 }}
-                pagination={{
-                    pageSize: 25
-                }}
-            />
+            {fetchedUsersResponse &&
+                <Table
+                    columns={columns}
+                    dataSource={fetchedUsersResponse.users}
+                    scroll={{ x: 600 }}
+                    pagination={{
+                        current: fetchedUsersResponse.page,
+                        total: fetchedUsersResponse.total,
+                        pageSize: fetchedUsersResponse.pageSize,
+                        showSizeChanger: true,
+                        onChange: onChangePagination,
+                    }}
+                />
+            }
         </div>
     )
 };

@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Spin } from 'antd';
-import { RoleProtectedRoute } from '../components';
+import { RoleProtectedRoute } from '@/components';
 
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));

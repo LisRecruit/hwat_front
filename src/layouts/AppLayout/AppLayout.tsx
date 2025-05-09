@@ -1,19 +1,10 @@
-//import { lazy } from 'react';
 import styles from './AppLayout.module.scss';
-import { Breadcrumb, Layout, Menu, Flex, Typography } from 'antd';
+import { Breadcrumb, Layout, Flex, Typography } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
-import AppRoutes from '../../routes/AppRoutes';
-import { LoginedUserDropdown } from '../../components';
-import { AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
+import { LoginedUserDropdown } from '@/components';
+import AppRoutes from '@/routes/AppRoutes.tsx';
 
 const { Header, Content, Footer } = Layout
-
-//const Dashboard = lazy(() => import('../../pages/Dashboard/Dashboard'))
-
-const menu = [
-    { key: 1, label: 'Interlude', icon: <AppstoreOutlined/> },
-    { key: 2, label: 'High Five', icon: <SettingOutlined/> },
-];
 
 const breadcrumbs = [
     {
@@ -32,15 +23,9 @@ const AppLayout = () => {
             <Header className={styles.header}>
                 <Flex justify='space-between' align='center' gap='large' className={styles.row}>
                     <Typography.Title level={1} className={styles.logo}>
-                        Company name
+                        HWAT
                     </Typography.Title>
-                    <Menu
-                        theme='dark'
-                        mode='horizontal'
-                        //defaultSelectedKeys={['1']}
-                        items={menu}
-                        style={{ flex: 1, minWidth: 0 }}
-                    />
+
                     <LoginedUserDropdown
                         username='Sheppard'
                         email='sheppard@gmail.com'

@@ -25,10 +25,12 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "@/hooks": ["hooks/index.ts"],
+      "@/components": ["components/index.ts"],
       "@/lib": ["lib/index.ts"],
       "@/pages/*": ["pages/*"],
       "@/types/*": ["types/*"],
-      "@/stores/*": ["stores/*"]
+      "@/stores/*": ["stores/*"],
+      "@/routes/*": ["routes/*"]
     }
   },
     "include": [

@@ -3,8 +3,7 @@ import {
     iUserLoginRequest,
     iUserRegistrationRequest,
     iUserRegistrationResponse,
-    iGetUnApprovedUsersResponse,
-    iDeleteUserResponse, iSwitchAccessUserResponse
+    iDeleteUserResponse, iSwitchAccessUserResponse, iGetUsersResponse
 } from './types';
 
 export class ApiManager {
@@ -102,8 +101,8 @@ export class ApiManager {
     static registration(body: iUserRegistrationRequest): Promise<iUserRegistrationResponse> {
         return this.post<iUserRegistrationResponse>(this.API_URL + '/auth/registration', body);
     }
-    static getUnapprovedUsers(authToken: string): Promise<iGetUnApprovedUsersResponse> {
-        return this.get<iGetUnApprovedUsersResponse>(this.API_URL_ADMIN + '/users/getUnapproved', authToken);
+    static getUsers(authToken: string, page: number, pageSize: number): Promise<iGetUsersResponse> {
+        return this.get<iGetUsersResponse>(this.API_URL_ADMIN + `/users/listAll?page=${page}&pageSize=${pageSize}`, authToken);
     }
     static deleteUser(authToken: string, id: number): Promise<iDeleteUserResponse> {
         return this.delete<iDeleteUserResponse>(this.API_URL_ADMIN + `/users/${id}`, authToken)

@@ -21,14 +21,17 @@ export interface iUserRegistrationResponse {
     },
     message: string
 }
-export interface iUnApprovedUser {
+export interface iUser {
     id: number,
     username: string,
     enabled: boolean,
     roleNames: string[]
 }
-export interface iGetUnApprovedUsersResponse {
-    users: iUnApprovedUser[]
+export interface iGetUsersResponse {
+    users: iUser[],
+    page: number,
+    pageSize: number,
+    total: number
 }
 export interface iDeleteUserResponse {
     message: string,
