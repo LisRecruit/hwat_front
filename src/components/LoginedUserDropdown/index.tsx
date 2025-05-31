@@ -7,10 +7,10 @@ import { PiUserCircleGearDuotone } from 'react-icons/pi';
 import { NavLink } from 'react-router-dom';
 import { IoMdSettings } from 'react-icons/io';
 import { iUserAvatarProps } from './types';
-import { IconWrapper } from '../IconWrapper';
 import { useAuth, useAuthCookies } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/useUserStore.ts';
+import Icon from '@ant-design/icons';
 
 export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email }) => {
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email }) =
             key: 'email',
             label: <Flex gap={2} vertical>
                 <Typography.Text className={styles.username}>{username}</Typography.Text>
-                <Typography.Text className={styles.email}>{email}</Typography.Text>
+                <Typography.Text>{email}</Typography.Text>
             </Flex>,
             disabled: true,
         },
@@ -41,9 +41,7 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email }) =
             label: <NavLink to='/admin-dashboard' className={styles.link}>
                 Admin
             </NavLink>,
-            icon: <IconWrapper width={20} height={20} className={styles.icon}>
-                <BsDatabaseFillGear/>
-            </IconWrapper>,
+            icon: <Icon component={BsDatabaseFillGear} className={styles.icon}/>,
             className: styles.row
         },
         {
@@ -51,9 +49,7 @@ export const LoginedUserDropdown: FC<iUserAvatarProps> = ({ username, email }) =
             label:  <NavLink to='/settings' className={styles.link}>
                 Settings
             </NavLink>,
-            icon: <IconWrapper width={20} height={20} className={styles.icon}>
-                <IoMdSettings/>
-            </IconWrapper>,
+            icon:  <Icon component={IoMdSettings} className={styles.icon}/>,
             className: styles.row
         },
         {

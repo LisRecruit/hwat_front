@@ -1,13 +1,13 @@
 import { FC } from 'react';
 import styles from './AdminDashboard.module.scss';
-import { iUnApprovedUser } from '@/lib';
+import type { iUser } from '@/lib';
 import { useDeleteUser, useSwitchAccessUser, useGetUsers, usePagination } from '@/hooks';
-import { Avatar, Button, Dropdown, Flex, Table, TableColumnsType, Typography, Tag } from 'antd';
+import { Avatar, Button, Dropdown, Flex, Table, type TableColumnsType, Typography, Tag, Tabs, type TabsProps } from 'antd';
 import Icon from '@ant-design/icons';
-import { head, split, upperCase, capitalize, map } from 'lodash';
+import { head, split, upperCase, capitalize, map, toString } from 'lodash';
 import { ImCross } from 'react-icons/im';
 import { FaCheck } from 'react-icons/fa';
-import { MdDeleteForever } from 'react-icons/md';
+import { MdDeleteForever, MdCancel } from 'react-icons/md';
 import { HiDotsVertical } from 'react-icons/hi';
 import { AiFillCheckCircle } from 'react-icons/ai';
 
@@ -32,17 +32,30 @@ const getRandomColor = (index: number, colorsSchema: string[]): string => {
 const AdminDashboard: FC = () => {
     const { pagination, onChangePagination } = usePagination();
 
-    const { data: fetchedUsersResponse, isLoading, error } = useGetUsers(pagination.page, pagination.pageSize);
+    const { data: fetchedUsersResponse, isLoading, error, onChangeUsersStatusListType } = useGetUsers(
+        pagination.page,
+        pagination.pageSize
+    );
     const { mutate: dispatchDeleteUser } = useDeleteUser();
     const { mutate: dispatchSwitchAccessUser } = useSwitchAccessUser();
-
-    if (isLoading) return <div>Загрузка...</div>;
+    console.log('isLoading', isLoading)
     if (error) return <div>Ошибка при загрузке пользователей</div>;
 
-    const onClickApproveUser = (record: iUnApprovedUser) => dispatchSwitchAccessUser(record.id);
-    const onClickDeleteUser = (record: iUnApprovedUser) => dispatchDeleteUser(record.id);
+    const onClickApproveUser = (record: iUser) => dispatchSwitchAccessUser(record.id);
+    const onClickDeleteUser = (record: iUser) => dispatchDeleteUser(record.id);
 
-    const columns: TableColumnsType<iUnApprovedUser> = [
+    const onChangeSelectedTab = (key: string): void => {
+       switch (key) {
+           case 'unapproved':
+               return onChangeUsersStatusListType(false);
+           case 'approved':
+               return onChangeUsersStatusListType(true);
+           default:
+               return;
+       }
+    };
+
+    const columns: TableColumnsType<iUser> = [
         {
             key: 'id',
             dataIndex: 'id',
@@ -64,7 +77,7 @@ const AdminDashboard: FC = () => {
         {
             key: 'enabled',
             dataIndex: 'enabled',
-            title: 'Enabled',
+            title: 'Approved',
             render: (value) => value
                 ? <Icon component={FaCheck} className={styles.check}/>
                 : <Icon component={ImCross} className={styles.cross}/>
@@ -74,7 +87,7 @@ const AdminDashboard: FC = () => {
             dataIndex: 'roleNames',
             title: 'Roles',
             render: (roles) => map(roles, (role, index) => {
-                return <Tag color={getRandomColor(index, tagColorsList)}>{role}</Tag>
+                return <Tag key={role} color={getRandomColor(index, tagColorsList)}>{role}</Tag>
             })
         },
         {
@@ -85,12 +98,20 @@ const AdminDashboard: FC = () => {
                     <Dropdown
                         menu={{
                             items: [
-                                {
-                                    key: 'approve',
-                                    label: 'Approve',
-                                    icon: <Icon component={AiFillCheckCircle} className={styles.icon}/>,
-                                    onClick: () => onClickApproveUser(record),
-                                },
+                                record.enabled
+                                    ? {
+                                        key: 'unapprove',
+                                        label: 'Unapprove',
+                                        icon: <Icon component={MdCancel} className={styles.icon}/>,
+                                        onClick: () => onClickApproveUser(record),
+                                    }
+                                    : {
+                                        key: 'approve',
+                                        label: 'Approve',
+                                        icon: <Icon component={AiFillCheckCircle} className={styles.icon}/>,
+                                        onClick: () => onClickApproveUser(record),
+                                    }
+                                ,
                                 {
                                     key: 'delete',
                                     label: 'Delete',
@@ -113,13 +134,17 @@ const AdminDashboard: FC = () => {
         },
     ];
 
-    return (
-        <div>
-            {fetchedUsersResponse &&
+    const tabsList: TabsProps['items'] = [
+        {
+            key: 'unapproved',
+            label: 'Unapproved',
+            children: fetchedUsersResponse &&
                 <Table
                     columns={columns}
                     dataSource={fetchedUsersResponse.users}
+                    rowKey={(record) => toString(record.id)}
                     scroll={{ x: 600 }}
+                    loading={isLoading}
                     pagination={{
                         current: fetchedUsersResponse.page,
                         total: fetchedUsersResponse.total,
@@ -128,8 +153,34 @@ const AdminDashboard: FC = () => {
                         onChange: onChangePagination,
                     }}
                 />
-            }
-        </div>
+        },
+        {
+            key: 'approved',
+            label: 'Approved',
+            children: fetchedUsersResponse &&
+                <Table
+                    columns={columns}
+                    dataSource={fetchedUsersResponse.users}
+                    rowKey={(record) => toString(record.id)}
+                    scroll={{ x: 600 }}
+                    loading={isLoading}
+                    pagination={{
+                        current: fetchedUsersResponse.page,
+                        total: fetchedUsersResponse.total,
+                        pageSize: fetchedUsersResponse.pageSize,
+                        showSizeChanger: true,
+                        onChange: onChangePagination,
+                    }}
+                />
+        },
+    ];
+
+    return (
+        <Tabs
+            onChange={onChangeSelectedTab}
+            type='card'
+            items={tabsList}
+        />
     )
 };
 

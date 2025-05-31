@@ -1,0 +1,23 @@
+.container {
+  width: 100%;
+}
+.steps, .content {
+  width: 100%;
+  max-width: 640px;
+}
+.icon {
+  font-size: 36px;
+}
+.uploadParagraph {
+  text-align: center !important;
+}
+.input {
+  width: 380px !important;
+}
+.paragraph {
+  margin: 0 !important;
+
+  &.error {
+    min-height: 22px;
+  }
+}

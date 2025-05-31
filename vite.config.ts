@@ -14,4 +14,8 @@ export default defineConfig({
       validatorjs: 'validatorjs/dist/validator.js', // remove after validatorjs devs fix bug with non worked validation.fails()
     },
   },
+  server: {
+    host: true,
+    port: 5173,
+  },
 })

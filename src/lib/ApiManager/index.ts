@@ -101,8 +101,8 @@ export class ApiManager {
     static registration(body: iUserRegistrationRequest): Promise<iUserRegistrationResponse> {
         return this.post<iUserRegistrationResponse>(this.API_URL + '/auth/registration', body);
     }
-    static getUsers(authToken: string, page: number, pageSize: number): Promise<iGetUsersResponse> {
-        return this.get<iGetUsersResponse>(this.API_URL_ADMIN + `/users/listAll?page=${page}&pageSize=${pageSize}`, authToken);
+    static getUsers(authToken: string, page: number, pageSize: number, approved: boolean): Promise<iGetUsersResponse> {
+        return this.get<iGetUsersResponse>(`${this.API_URL_ADMIN}/users/listAll?page=${page}&pageSize=${pageSize}&approved=${approved}`, authToken);
     }
     static deleteUser(authToken: string, id: number): Promise<iDeleteUserResponse> {
         return this.delete<iDeleteUserResponse>(this.API_URL_ADMIN + `/users/${id}`, authToken)
