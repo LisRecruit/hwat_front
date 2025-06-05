@@ -42,12 +42,14 @@ const uploadFormDataValidationRules = {
     periodFrom: 'required|min:1|max:10',
     periodTo: 'required|min:1|max:10',
     subsidiaryInternalId: 'required|min:1',
-    accrualDays: 'required_if:isAccrual,true|min:1',
+    accrualDays: 'required_if:isAccrual,true|integer|min:1|max:15',
 };
 
 const customMessages = {
     'required': 'This field is required',
     'required_if': 'This field is required',
+    'min': 'This field must be between 1 and 15',
+    'max': 'This field must be between 1 and 15'
 };
 
 const toDayJsFormatDate = (date: string): Dayjs | null => {
@@ -298,8 +300,7 @@ const Dashboard: React.FC = () => {
                         Accrual days:
                     </Typography.Text>
                     <InputNumber
-                        min={1}
-                        max={15}
+                        min={0}
                         onChange={onChangeNumberInput('accrualDays')}
                         className={styles.input}
                         value={
