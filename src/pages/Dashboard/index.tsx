@@ -3,7 +3,7 @@ import {
     Flex,
     Typography,
     Upload,
-    //notification,
+    notification,
     Steps,
     type StepProps,
     Button,
@@ -18,9 +18,10 @@ import Icon, { InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import { compact, map, mapValues, toNumber, toString } from 'lodash';
 import { MdNavigateNext, MdNavigateBefore } from 'react-icons/md';
 import dayjs, { Dayjs } from 'dayjs';
-import { iUploadFormDataInitialState, UploadFormDataKeyType } from '@/pages/Dashboard/types.ts';
+import type { iUploadFormDataInitialState, UploadFormDataKeyType } from '@/pages/Dashboard/types.ts';
 import Validator from 'validatorjs';
 import classNames from 'classnames';
+import { useUploadPayrollFile } from '@/hooks';
 
 const cx = classNames.bind(styles);
 
@@ -65,54 +66,17 @@ const toDateString = (date: Dayjs | null): string => {
 };
 
 const Dashboard: React.FC = () => {
-    //const [notifications, notificationsContext] = notification.useNotification();
+    const [notifications, notificationsContext] = notification.useNotification();
 
     const [current, setCurrent] = useState(0);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploadFormData, setUploadFormData] = useState<iUploadFormDataInitialState>(uploadFormDataInitialState);
-    console.log('uploadFormData', uploadFormData)
 
-    // const onChangeUpload = (info: UploadChangeParam)=> {
-    //     const { status } = info.file;
-    //
-    //     if (status !== 'uploading') {
-    //         console.log(info.file, info.fileList);
-    //     }
-    //     if (status === 'done') {
-    //         notifications.success({
-    //             message: 'Upload successful!',
-    //             description: <Typography.Text>
-    //                 {`${info.file.name} file uploaded successfully.`}
-    //             </Typography.Text>,
-    //             showProgress: true,
-    //             pauseOnHover: true,
-    //             duration: null
-    //         });
-    //     } else if (status === 'error') {
-    //         notifications.error({
-    //             message: 'Upload error',
-    //             description: <Typography.Text>
-    //                 {`${info.file.name} file upload failed.`}
-    //             </Typography.Text>,
-    //             showProgress: true,
-    //             pauseOnHover: true,
-    //         });
-    //     }
-    // };
+    const uploadPayrollFile = useUploadPayrollFile();
 
     const onClickNextButton = () => setCurrent(current + 1);
 
     const onClickPrevButton = () => setCurrent(current - 1);
-
-    // const onClickFinishStepsButton = () => notifications.success({
-    //     message: 'Finish ',
-    //     description: <Typography.Text>
-    //         This is finish step
-    //     </Typography.Text>,
-    //     showProgress: true,
-    //     pauseOnHover: true,
-    //     duration: null
-    // });
 
     const onDropBeforeUpload = (file: UploadFile) => {
         setFileList([file]);
@@ -122,9 +86,24 @@ const Dashboard: React.FC = () => {
     const onClickRemoveFile = () => setFileList([]);
 
     const onClickUploadButton = async () => {
-        const file = fileList[0];
+        const file: UploadFile = fileList[0];
 
-        if (!file) return;
+
+        if (!file) {
+            notifications.error({
+                message: 'Ошибка',
+                description: 'Загруженный объект не является файлом'
+            });
+            return;
+        }
+
+        if (!(file instanceof File)) {
+            notifications.error({
+                message: 'Ошибка',
+                description: 'Загруженный объект не является файлом'
+            });
+            return;
+        }
 
         const userData = mapValues(uploadFormData, input => input.value);
 
@@ -146,7 +125,36 @@ const Dashboard: React.FC = () => {
             })));
         }
 
-        // dispatch
+        const query: Record<string, string | number | boolean> = {
+            paymentDate: userData.paymentDate,
+            periodFrom: userData.periodFrom,
+            periodTo: userData.periodTo,
+            subsidiaryInternalId: Number(userData.subsidiaryInternalId),
+            fees: parseFloat(userData.fees || '0'),
+            otherCollections: parseFloat(userData.otherCollections || '0'),
+            isAccrual: userData.isAccrual === 'true',
+            accrualDays: parseInt(userData.accrualDays || '0')
+        };
+
+        uploadPayrollFile.mutate(
+            { file, query },
+            {
+                onSuccess: () => {
+                    notifications.success({
+                        message: 'Upload successful',
+                        description: 'Your payroll file was processed.'
+                    });
+                    setFileList([]);
+                    setUploadFormData(uploadFormDataInitialState);
+                },
+                onError: (error: Error) => {
+                    notifications.error({
+                        message: 'Upload failed',
+                        description: error.message
+                    });
+                }
+            }
+        );
     };
 
     const onChangeDatePicker = (field: UploadFormDataKeyType) => (date: Dayjs | null) => {
@@ -373,7 +381,7 @@ const Dashboard: React.FC = () => {
                </Flex>
            </div>
 
-           {/*{notificationsContext}*/}
+           {notificationsContext}
        </Flex>
     )
 }

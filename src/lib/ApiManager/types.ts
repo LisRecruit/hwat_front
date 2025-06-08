@@ -1,9 +1,11 @@
+interface iMessageResponse {
+    message: string
+}
 export interface iUserLoginRequest {
     username: string,
     password: string,
 }
-export interface iUserLoginResponse {
-    message: string;
+export interface iUserLoginResponse extends iMessageResponse {
     token?: string;
     error?: string;
 }
@@ -11,15 +13,14 @@ export interface iUserRegistrationRequest {
     username: string,
     password: string
 }
-export interface iUserRegistrationResponse {
+export interface iUserRegistrationResponse extends iMessageResponse {
     token: string,
     userResponse: {
         id: number,
         username: string,
         enabled: boolean,
         roleIds: number[]
-    },
-    message: string
+    }
 }
 export interface iUser {
     id: number,
@@ -33,9 +34,14 @@ export interface iGetUsersResponse {
     pageSize: number,
     total: number
 }
-export interface iDeleteUserResponse {
-    message: string,
+export type iDeleteUserResponse = iMessageResponse
+
+export type iSwitchAccessUserResponse = iMessageResponse
+
+export interface iUploadPayrollFileRequest {
+    file: File,
+    query: Record<string, string | number | boolean>
 }
-export interface iSwitchAccessUserResponse {
-    message: string,
+export interface iUploadPayrollFileResponse extends iMessageResponse {
+    transactionId: number,
 }
