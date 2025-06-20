@@ -1,21 +1,22 @@
-import { FC } from 'react';
-import styles from './AdminDashboard.module.scss';
+import React from 'react';
+import { useDeleteUser, useGetUsers, usePagination, useSwitchAccessUser } from '@/hooks';
+import { Avatar, Button, Dropdown, Flex, Table, type TableColumnsType, Tag, Typography } from 'antd';
 import type { iUser } from '@/lib';
-import { useDeleteUser, useSwitchAccessUser, useGetUsers, usePagination } from '@/hooks';
-import { Avatar, Button, Dropdown, Flex, Table, type TableColumnsType, Typography, Tag, Tabs, type TabsProps } from 'antd';
+import { capitalize, head, map, split, toString, upperCase } from 'lodash';
 import Icon from '@ant-design/icons';
-import { head, split, upperCase, capitalize, map, toString } from 'lodash';
-import { ImCross } from 'react-icons/im';
 import { FaCheck } from 'react-icons/fa';
-import { MdDeleteForever, MdCancel } from 'react-icons/md';
-import { HiDotsVertical } from 'react-icons/hi';
+import styles from '@/pages/Admin/Admin.module.scss';
+import { ImCross } from 'react-icons/im';
+import { MdCancel, MdDeleteForever } from 'react-icons/md';
 import { AiFillCheckCircle } from 'react-icons/ai';
+import { HiDotsVertical } from 'react-icons/hi';
 
 const userAvatarColorsList: string[] = [
     'var(--color-brand)',
     'var(--color-green)',
     'var(--color-red)',
 ];
+
 const tagColorsList: string[] = [
     'magenta',
     'green',
@@ -29,31 +30,22 @@ const getRandomColor = (index: number, colorsSchema: string[]): string => {
     return colorsSchema[index % colorsSchema.length];
 };
 
-const AdminDashboard: FC = () => {
+const Unapproved: React.FC = () => {
     const { pagination, onChangePagination } = usePagination();
 
-    const { data: fetchedUsersResponse, isLoading, error, onChangeUsersStatusListType } = useGetUsers(
-        pagination.page,
-        pagination.pageSize
-    );
+    const { data: fetchedUsersResponse, isLoading, error } = useGetUsers({
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        isRequestGetApprovedUsers: false
+    });
+
     const { mutate: dispatchDeleteUser } = useDeleteUser();
     const { mutate: dispatchSwitchAccessUser } = useSwitchAccessUser();
-    console.log('isLoading', isLoading)
-    if (error) return <div>Ошибка при загрузке пользователей</div>;
+
+    if (error) return <div>Error while loading users</div>;
 
     const onClickApproveUser = (record: iUser) => dispatchSwitchAccessUser(record.id);
     const onClickDeleteUser = (record: iUser) => dispatchDeleteUser(record.id);
-
-    const onChangeSelectedTab = (key: string): void => {
-       switch (key) {
-           case 'unapproved':
-               return onChangeUsersStatusListType(false);
-           case 'approved':
-               return onChangeUsersStatusListType(true);
-           default:
-               return;
-       }
-    };
 
     const columns: TableColumnsType<iUser> = [
         {
@@ -134,54 +126,22 @@ const AdminDashboard: FC = () => {
         },
     ];
 
-    const tabsList: TabsProps['items'] = [
-        {
-            key: 'unapproved',
-            label: 'Unapproved',
-            children: fetchedUsersResponse &&
-                <Table
-                    columns={columns}
-                    dataSource={fetchedUsersResponse.users}
-                    rowKey={(record) => toString(record.id)}
-                    scroll={{ x: 600 }}
-                    loading={isLoading}
-                    pagination={{
-                        current: fetchedUsersResponse.page,
-                        total: fetchedUsersResponse.total,
-                        pageSize: fetchedUsersResponse.pageSize,
-                        showSizeChanger: true,
-                        onChange: onChangePagination,
-                    }}
-                />
-        },
-        {
-            key: 'approved',
-            label: 'Approved',
-            children: fetchedUsersResponse &&
-                <Table
-                    columns={columns}
-                    dataSource={fetchedUsersResponse.users}
-                    rowKey={(record) => toString(record.id)}
-                    scroll={{ x: 600 }}
-                    loading={isLoading}
-                    pagination={{
-                        current: fetchedUsersResponse.page,
-                        total: fetchedUsersResponse.total,
-                        pageSize: fetchedUsersResponse.pageSize,
-                        showSizeChanger: true,
-                        onChange: onChangePagination,
-                    }}
-                />
-        },
-    ];
-
     return (
-        <Tabs
-            onChange={onChangeSelectedTab}
-            type='card'
-            items={tabsList}
+        fetchedUsersResponse &&
+        <Table
+            columns={columns}
+            dataSource={fetchedUsersResponse.users}
+            rowKey={(record) => toString(record.id)}
+            scroll={{ x: 600 }}
+            loading={isLoading}
+            pagination={{
+                current: fetchedUsersResponse.page,
+                total: fetchedUsersResponse.total,
+                pageSize: fetchedUsersResponse.pageSize,
+                showSizeChanger: true,
+                onChange: onChangePagination,
+            }}
         />
     )
-};
-
-export default AdminDashboard;
+}
+export default Unapproved;

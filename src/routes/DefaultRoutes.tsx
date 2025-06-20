@@ -1,21 +1,19 @@
 import { Route, Routes } from 'react-router';
-import { Suspense } from 'react';
-import { Spin } from 'antd';
+import React from 'react';
 import { SignIn } from '@/pages/SignIn';
 import { SignUp } from '@/pages/SignUp';
 
-const DefaultRoutes = () => {
+const DefaultRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path='/' element={
-                <Suspense fallback={ <Spin size='large'/> }>
-                    <SignIn/>
-                </Suspense>
+                <SignIn/>
             }/>
             <Route path='/sign-up' element={
-                <Suspense fallback={ <Spin size='large'/> }>
-                    <SignUp/>
-                </Suspense>
+                <SignUp/>
+            }/>
+            <Route path='*' element={
+                <SignIn/>
             }/>
         </Routes>
     )

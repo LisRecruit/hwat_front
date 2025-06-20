@@ -1,4 +1,4 @@
-export interface iUserAvatarProps {
+export interface iAccountCardProps {
     username: string,
     email: string,
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { iPaginationState } from './types.ts';
+import type { iPaginationState } from './types.ts';
 
 export const usePagination = (
     initialState: iPaginationState = { page: 1, pageSize: 30 }

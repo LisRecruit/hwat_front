@@ -12,13 +12,13 @@ import {
     InputNumber, Checkbox,
     type CheckboxProps,
 } from 'antd';
-import styles from './Dashboard.module.scss';
+import styles from './Upload.module.scss';
 import { IoMdCloudUpload, IoIosSettings } from 'react-icons/io';
 import Icon, { InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import { compact, map, mapValues, toNumber, toString } from 'lodash';
 import { MdNavigateNext, MdNavigateBefore } from 'react-icons/md';
 import dayjs, { Dayjs } from 'dayjs';
-import type { iUploadFormDataInitialState, UploadFormDataKeyType } from '@/pages/Dashboard/types.ts';
+import type { iUploadFormDataInitialState, UploadFormDataKeyType } from '@/pages/ProcessPayroll/UploadFile/types.ts';
 import Validator from 'validatorjs';
 import classNames from 'classnames';
 import { useUploadPayrollFile } from '@/hooks';
@@ -65,14 +65,17 @@ const toDateString = (date: Dayjs | null): string => {
         : '';
 };
 
-const Dashboard: React.FC = () => {
+const UploadFile: React.FC = () => {
     const [notifications, notificationsContext] = notification.useNotification();
 
     const [current, setCurrent] = useState(0);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploadFormData, setUploadFormData] = useState<iUploadFormDataInitialState>(uploadFormDataInitialState);
 
-    const uploadPayrollFile = useUploadPayrollFile();
+    const {
+        mutate: dispatchUploadPayrollFile,
+        isPending: isPendingUploadPayrollFile
+    } = useUploadPayrollFile();
 
     const onClickNextButton = () => setCurrent(current + 1);
 
@@ -136,12 +139,12 @@ const Dashboard: React.FC = () => {
             accrualDays: parseInt(userData.accrualDays || '0')
         };
 
-        uploadPayrollFile.mutate(
+        dispatchUploadPayrollFile(
             { file, query },
             {
                 onSuccess: () => {
                     notifications.success({
-                        message: 'Upload successful',
+                        message: 'UploadFile successful',
                         description: 'Your payroll file was processed.'
                     });
                     setFileList([]);
@@ -149,7 +152,7 @@ const Dashboard: React.FC = () => {
                 },
                 onError: (error: Error) => {
                     notifications.error({
-                        message: 'Upload failed',
+                        message: 'UploadFile failed',
                         description: error.message
                     });
                 }
@@ -374,6 +377,7 @@ const Dashboard: React.FC = () => {
                            icon={<UploadOutlined/>}
                            onClick={onClickUploadButton}
                            disabled={fileList.length === 0}
+                           loading={isPendingUploadPayrollFile}
                        >
                            Upload file
                        </Button>
@@ -386,4 +390,4 @@ const Dashboard: React.FC = () => {
     )
 }
 
-export default Dashboard;
+export default UploadFile;

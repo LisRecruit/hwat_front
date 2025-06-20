@@ -1,6 +1,11 @@
 interface iMessageResponse {
     message: string
 }
+interface iPaginationResponse {
+    page: number,
+    pageSize: number,
+    total: number
+}
 export interface iUserLoginRequest {
     username: string,
     password: string,
@@ -28,13 +33,10 @@ export interface iUser {
     enabled: boolean,
     roleNames: string[]
 }
-export interface iGetUsersResponse {
-    users: iUser[],
-    page: number,
-    pageSize: number,
-    total: number
+export interface iGetUsersResponse extends iPaginationResponse {
+    users: iUser[]
 }
-export type iDeleteUserResponse = iMessageResponse
+export type iDeleteUserResponse = iMessageResponse;
 
 export type iSwitchAccessUserResponse = iMessageResponse
 
@@ -45,3 +47,11 @@ export interface iUploadPayrollFileRequest {
 export interface iUploadPayrollFileResponse extends iMessageResponse {
     transactionId: number,
 }
+export interface iTransaction {
+    id: number,
+    date: string,
+}
+export interface iGetTransactionsListResponse extends iPaginationResponse {
+    transactions: iTransaction[],
+}
+export type iDeleteTransactionResponse = iMessageResponse;

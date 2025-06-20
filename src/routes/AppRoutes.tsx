@@ -1,29 +1,43 @@
-import { Route, Routes } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { Spin } from 'antd';
-import { RoleProtectedRoute } from '@/components';
+import { RoleProtectedRoute, Spinner } from '@/components';
+import { MainPage } from '@/pages/MainPage';
 
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
+const ProcessPayroll = lazy(() => import('@/pages/ProcessPayroll'));
+const Admin = lazy(() => import('pages/Admin'));
+const PageNotFound = lazy(() => import('@/pages/PageNotFound'));
 
-const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path='/' element={
-                <Suspense fallback={ <Spin size='large'/> }>
-                    <Dashboard/>
-                </Suspense>
+                <MainPage/>
             }/>
             <Route
-                path='/admin-dashboard'
+                path='/admin/*'
                 element={
                     <RoleProtectedRoute requiredRole='ADMIN'>
-                        <Suspense fallback={ <Spin size='large'/> }>
-                            <AdminDashboard/>
+                        <Suspense fallback={ <Spinner/> }>
+                            <Admin/>
                         </Suspense>
                     </RoleProtectedRoute>
                 }
             />
+            <Route path='/process-payroll/*' element={
+                <Suspense fallback={ <Spinner/> }>
+                    <ProcessPayroll/>
+                </Suspense>
+            }/>
+
+            <Route path='/process-payroll' element={ <Navigate replace to='/process-payroll/upload'/> }/>
+            <Route path='/admin' element={ <Navigate replace to='/admin/unapproved'/> }/>
+
+            <Route path='*' element={
+                <Suspense fallback={ <Spinner/> }>
+                    <PageNotFound/>
+                </Suspense>
+            }/>
         </Routes>
     )
 }

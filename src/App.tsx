@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
-import AppLayout from './layouts/AppLayout/AppLayout';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
-import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
-import { useAuth, useInitAuthState } from './hooks';
+import { useAuth, useInitAuthState } from '@/hooks';
+import { AppLayout, DefaultLayout } from '@/components'
 
 const App = (): ReactNode => {
     useInitAuthState();
@@ -13,7 +12,6 @@ const App = (): ReactNode => {
     return (
         <BrowserRouter>
             <ConfigProvider
-                //locale={locale}
                 theme={{
                     token: {
                         colorPrimary: '#1677FF'

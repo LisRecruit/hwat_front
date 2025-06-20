@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { Button, Flex, Input, notification, Typography } from 'antd';
 import { lowerCase, compact, map, mapValues, toPairs } from 'lodash';
 import Validator from 'validatorjs';
-import { ReactChangeEventType } from '@/types/ReactEventTypes';
+import type { ReactChangeEventType } from '@/types/ReactEventTypes';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
-import { ApiManager, iUserLoginRequest } from '@/lib';
-import { iRegistrationFormDataInitialState, RegistrationFormDataKeyTypes } from './types';
+import { ApiManager, type iUserLoginRequest } from '@/lib';
+import type { iRegistrationFormDataInitialState, RegistrationFormDataKeyTypes } from './types';
 import { useMutation } from '@tanstack/react-query';
 
 const cx = classNames.bind(styles);
@@ -151,4 +151,4 @@ export const SignUp: React.FC = () => {
             {notificationsContext}
         </Flex>
     )
-}
+};

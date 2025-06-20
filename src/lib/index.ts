@@ -1,5 +1,6 @@
 export { ApiManager } from './ApiManager';
 export type {
     iUserLoginRequest,
-    iUser
+    iUser,
+    iTransaction
 } from './ApiManager/types.ts';

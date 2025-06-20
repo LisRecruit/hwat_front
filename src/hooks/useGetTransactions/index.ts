@@ -1,18 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { ApiManager } from '@/lib';
 import { useAuth } from '@/hooks';
-import type { iUseGetUsersProps } from './types.ts';
 
-export const useGetUsers = ({ page, pageSize, isRequestGetApprovedUsers }: iUseGetUsersProps) => {
+export const useGetTransactions = (
+    page: number = 1,
+    pageSize: number = 30,
+) => {
     const { isAuthenticated, authToken } = useAuth();
 
     return {
         ...useQuery({
-            queryKey: ['users', authToken, page, pageSize, isRequestGetApprovedUsers],
+            queryKey: ['transactions', authToken, page, pageSize],
             queryFn: () => {
                 if (!authToken) throw new Error('Нет токена');
 
-                return ApiManager.getUsers(authToken, page, pageSize, isRequestGetApprovedUsers);
+                return ApiManager.getTransactionsList(authToken, page, pageSize);
             },
             enabled: isAuthenticated,
             retry: 1,

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { ApiManager } from '@/lib';
-import { iUploadPayrollFileParams } from './types.ts';
+import type { iUploadPayrollFileParams } from './types.ts';
 import { useAuth } from '../useAuth';
 
 export const useUploadPayrollFile = () => {

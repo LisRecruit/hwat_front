@@ -1,4 +1,4 @@
-import {
+import type {
     iUserLoginResponse,
     iUserLoginRequest,
     iUserRegistrationRequest,
@@ -7,7 +7,7 @@ import {
     iSwitchAccessUserResponse,
     iGetUsersResponse,
     iUploadPayrollFileRequest,
-    iUploadPayrollFileResponse
+    iUploadPayrollFileResponse, iGetTransactionsListResponse, iDeleteTransactionResponse
 } from './types';
 
 export class ApiManager {
@@ -85,6 +85,27 @@ export class ApiManager {
         return responseJson;
     }
 
+    private static async downloadFileGet<T = Blob>(url: string, token?: string): Promise<T> {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers
+        });
+
+        if (!response.ok) {
+            throw new Error(await response.text() || 'Request failed');
+        }
+
+        return await response.blob() as T; // <- получаем файл
+    }
+
     private static async delete<T>(url: string, token?: string): Promise<T> {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -155,5 +176,14 @@ export class ApiManager {
         ).toString();
 
         return this.uploadFilePost<iUploadPayrollFileResponse>(this.API_URL + `/payroll/upload?${queryString}`, formData, authToken);
+    }
+    static getTransactionsList(authToken: string, page: number, pageSize: number): Promise<iGetTransactionsListResponse> {
+        return this.get<iGetTransactionsListResponse>(`${this.API_URL}/payroll/listAll?page=${page}&pageSize=${pageSize}`, authToken);
+    }
+    static deleteTransaction(authToken: string, id: number): Promise<iDeleteTransactionResponse> {
+        return this.delete<iDeleteTransactionResponse>(this.API_URL + `/payroll/delete/${id}`, authToken)
+    }
+    static downloadTransactionFile(authToken: string, id: number, needUploadFile: boolean, needGmrFile: boolean): Promise<Blob> {
+        return this.downloadFileGet<Blob>(this.API_URL + `/payroll/download/${id}?needUploadFile=${needUploadFile}&needGmrFile=${needGmrFile}`, authToken)
     }
 }

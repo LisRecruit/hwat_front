@@ -1,8 +1,9 @@
+import React from 'react';
 import styles from './DefaultLayout.module.scss';
 import { Flex } from 'antd';
-import DefaultRoutes from '@/routes/DefaultRoutes';
+import DefaultRoutes from '@/routes/DefaultRoutes.tsx';
 
-const DefaultLayout = () => {
+export const DefaultLayout: React.FC = () => {
     return (
         <Flex justify='center' align='center' className={styles.container}>
             <div className={styles.form}>
@@ -11,4 +12,3 @@ const DefaultLayout = () => {
         </Flex>
     )
 }
-export default DefaultLayout;
