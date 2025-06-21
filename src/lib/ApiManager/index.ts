@@ -167,15 +167,31 @@ export class ApiManager {
         return this.patch<iSwitchAccessUserResponse>(this.API_URL_ADMIN + `/users/switchAccess/${id}`, authToken)
     }
 
+    // static async uploadPayrollFile(body: iUploadPayrollFileRequest, authToken: string): Promise<iUploadPayrollFileResponse> {
+    //     const formData = new FormData();
+    //     formData.append('file', body.file);
+    //
+    //     const queryString = new URLSearchParams(
+    //         Object.entries(body.query).map(([k, v]) => [k, String(v)])
+    //     ).toString();
+    //
+    //     return this.uploadFilePost<iUploadPayrollFileResponse>(this.API_URL + `/payroll/upload?${queryString}`, formData, authToken);
+    // }
+
     static async uploadPayrollFile(body: iUploadPayrollFileRequest, authToken: string): Promise<iUploadPayrollFileResponse> {
         const formData = new FormData();
         formData.append('file', body.file);
 
-        const queryString = new URLSearchParams(
-            Object.entries(body.query).map(([k, v]) => [k, String(v)])
-        ).toString();
+        // Добавляем все поля из body.query в formData как строки
+        Object.entries(body.query).forEach(([key, value]) => {
+            formData.append(key, String(value));
+        });
 
-        return this.uploadFilePost<iUploadPayrollFileResponse>(this.API_URL + `/payroll/upload?${queryString}`, formData, authToken);
+        return this.uploadFilePost<iUploadPayrollFileResponse>(
+            this.API_URL + '/payroll/upload',
+            formData,
+            authToken
+        );
     }
     static getTransactionsList(authToken: string, page: number, pageSize: number): Promise<iGetTransactionsListResponse> {
         return this.get<iGetTransactionsListResponse>(`${this.API_URL}/payroll/listAll?page=${page}&pageSize=${pageSize}`, authToken);

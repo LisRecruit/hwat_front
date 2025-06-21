@@ -144,7 +144,7 @@ const UploadFile: React.FC = () => {
             {
                 onSuccess: () => {
                     notifications.success({
-                        message: 'UploadFile successful',
+                        message: 'Upload file successful',
                         description: 'Your payroll file was processed.'
                     });
                     setFileList([]);
@@ -277,7 +277,7 @@ const UploadFile: React.FC = () => {
                     </Typography.Text>
                     <InputNumber
                         min={0}
-                        max={1}
+                        // max={1}
                         step={0.01}
                         precision={2}
                         onChange={onChangeNumberInput('fees')}
@@ -294,7 +294,7 @@ const UploadFile: React.FC = () => {
                     </Typography.Text>
                     <InputNumber
                         min={0}
-                        max={1}
+                        // max={1}
                         step={0.01}
                         precision={2}
                         onChange={onChangeNumberInput('otherCollections')}
