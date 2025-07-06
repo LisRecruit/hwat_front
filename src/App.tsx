@@ -7,7 +7,7 @@ import { AppLayout, DefaultLayout } from '@/components'
 const App = (): React.ReactNode => {
     useInitAuthState();
     const { isAuthenticated } = useAuth();
-
+    console.log('Fake commit')
     return (
         <BrowserRouter>
             <ConfigProvider
