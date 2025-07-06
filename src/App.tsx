@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import React from 'react';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 import { useAuth, useInitAuthState } from '@/hooks';
 import { AppLayout, DefaultLayout } from '@/components'
 
-const App = (): ReactNode => {
+const App = (): React.ReactNode => {
     useInitAuthState();
     const { isAuthenticated } = useAuth();
     //const locale = new Intl.Locale('en-US');

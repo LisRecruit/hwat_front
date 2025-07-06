@@ -56,8 +56,8 @@ const Unapproved: React.FC = () => {
             width: 80
         },
         {
-            key: 'username',
-            dataIndex: 'username',
+            key: 'userName',
+            dataIndex: 'userName',
             title: 'User',
             render: (username, _, index) => <Flex align='center' gap='small'>
                 <Avatar size={40} style={{ backgroundColor: getRandomColor(index, userAvatarColorsList) }}>

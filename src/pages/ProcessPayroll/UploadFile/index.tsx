@@ -277,7 +277,6 @@ const UploadFile: React.FC = () => {
                     </Typography.Text>
                     <InputNumber
                         min={0}
-                        // max={1}
                         step={0.01}
                         precision={2}
                         onChange={onChangeNumberInput('fees')}
