@@ -18,10 +18,10 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm ci
-
+        run: yarn install --immutable
+        
       - name: Build frontend
-        run: npm run build
+        run: yarn build
 
       - name: Copy build to VPS
         uses: appleboy/scp-action@v0.1.7
