@@ -21,7 +21,7 @@ jobs:
         run: yarn install --immutable
         
       - name: Build frontend
-        run: yarn build
+        run: yarn start:build
 
       - name: Copy build to VPS
         uses: appleboy/scp-action@v0.1.7
