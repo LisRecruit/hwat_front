@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import React from 'react';
 
 export interface iRoleProtectedRouteProps {
-    children: ReactNode;
+    children: React.ReactNode;
     requiredRole?: string;
 }
