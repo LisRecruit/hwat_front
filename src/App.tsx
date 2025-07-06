@@ -7,7 +7,6 @@ import { AppLayout, DefaultLayout } from '@/components'
 const App = (): React.ReactNode => {
     useInitAuthState();
     const { isAuthenticated } = useAuth();
-    //const locale = new Intl.Locale('en-US');
 
     return (
         <BrowserRouter>
