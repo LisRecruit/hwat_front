@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React from 'react';
 import styles from './AccountCard.module.scss';
 import { compact } from 'lodash';
 import { BsDatabaseFillGear } from 'react-icons/bs';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/useUserStore.ts';
 import Icon from '@ant-design/icons';
 
-export const AccountCard: FC<iAccountCardProps> = ({ username, email }) => {
+export const AccountCard: React.FC<iAccountCardProps> = ({ username, email }) => {
     const navigate = useNavigate();
     const { isAdmin } = useAuth();
     const { removeAuthCookies } = useAuthCookies();
