@@ -1,21 +1,20 @@
 import React from 'react';
 import styles from './AccountCard.module.scss';
-import { compact } from 'lodash';
+import { compact, capitalize, toString } from 'lodash';
 import { BsDatabaseFillGear } from 'react-icons/bs';
 import { Avatar, Badge, type MenuProps,  Dropdown, Button, Flex, Typography } from 'antd';
 import { PiUserCircleGearDuotone } from 'react-icons/pi';
 import { NavLink } from 'react-router-dom';
 //import { IoMdSettings } from 'react-icons/io';
 import { FaMoneyBillTransfer } from 'react-icons/fa6';
-import type { iAccountCardProps } from './types.ts';
 import { useAuth, useAuthCookies } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/useUserStore.ts';
 import Icon from '@ant-design/icons';
 
-export const AccountCard: React.FC<iAccountCardProps> = ({ username, email }) => {
+export const AccountCard: React.FC = () => {
     const navigate = useNavigate();
-    const { isAdmin } = useAuth();
+    const { isAdmin, username } = useAuth();
     const { removeAuthCookies } = useAuthCookies();
 
     const onClickSignOutButton = () => {
@@ -28,8 +27,8 @@ export const AccountCard: React.FC<iAccountCardProps> = ({ username, email }) =>
         {
             key: 'email',
             label: <Flex gap={2} vertical>
-                <Typography.Text className={styles.username}>{username}</Typography.Text>
-                <Typography.Text>{email}</Typography.Text>
+                <Typography.Text className={styles.username}>{capitalize(toString(username))}</Typography.Text>
+                {/*<Typography.Text>{email}</Typography.Text>*/}
             </Flex>,
             disabled: true,
         },

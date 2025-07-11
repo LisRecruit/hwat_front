@@ -34,10 +34,7 @@ export const AppLayout: React.FC = () => {
                         HWAT
                     </Typography.Title>
 
-                    <AccountCard
-                        username='Sheppard'
-                        email='sheppard@gmail.com'
-                    />
+                    <AccountCard/>
                 </Flex>
             </Header>
             <BreadcrumbsContext.Provider value={context}>

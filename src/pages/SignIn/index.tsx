@@ -54,7 +54,6 @@ export const SignIn: React.FC = () => {
     });
 
     const onClickSignInButton = () => {
-
         const userData = mapValues(loginFormData, input => input.value);
 
         const validation = new Validator(userData, loginFormDataValidationRules);

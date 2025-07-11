@@ -12,6 +12,7 @@ interface iJwtPayload {
 interface iUserState {
     authToken: string | null;
     userId: number | null;
+    username:  string | null;
     roles: string[];
     isAuthenticated: boolean;
     setToken: (token: string) => void;
@@ -21,6 +22,7 @@ interface iUserState {
 export const useUserStore = create<iUserState>((set) => ({
     authToken: null,
     userId: null,
+    username: null,
     roles: [],
     isAuthenticated: false,
 
@@ -31,6 +33,7 @@ export const useUserStore = create<iUserState>((set) => ({
             set({
                 authToken: token,
                 userId: decoded.user_id,
+                username: decoded.sub,
                 roles: decoded.roles ?? [],
                 isAuthenticated: true,
             });
@@ -38,6 +41,7 @@ export const useUserStore = create<iUserState>((set) => ({
             set({
                 authToken: null,
                 userId: null,
+                username: null,
                 roles: [],
                 isAuthenticated: false
             });
@@ -48,6 +52,7 @@ export const useUserStore = create<iUserState>((set) => ({
         set({
             authToken: null,
             userId: null,
+            username: null,
             roles: [],
             isAuthenticated: false,
         })
